@@ -23,7 +23,7 @@
         <!-- ros2 control include -->
         <xacro:include filename="$(find robotiq_description)/urdf/2f_85.ros2_control.xacro" />
         <!-- if we are simulating or directly communicating with the gripper we need a ros2 control instance -->
-        <xacro:if value="${include_ros2_control}">
+        <xacro:if value="${include_ros2_control == True or include_ros2_control == 'true'}">
             <xacro:robotiq_gripper_ros2_control
                 name="${name}" prefix="${prefix}"
                 sim_gazebo="${sim_gazebo}"
