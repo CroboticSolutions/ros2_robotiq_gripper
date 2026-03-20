@@ -172,9 +172,11 @@
                     <mesh filename="package://robotiq_description/meshes/visual/2f_85/left_finger_tip.dae" />
                 </geometry>
             </visual>
+            <!-- Box primitive matches collision STL AABB; tighter Bullet contact than tri-mesh. -->
             <collision>
+                <origin xyz="-0.00965 -0.0008 0.02252" rpy="0 0 0" />
                 <geometry>
-                    <mesh filename="package://robotiq_description/meshes/collision/2f_85/left_finger_tip.stl" />
+                    <box size="0.0312 0.027 0.057" />
                 </geometry>
                 <surface>
                     <friction>
@@ -209,8 +211,9 @@
                 </geometry>
             </visual>
             <collision>
+                <origin xyz="0.00965 0.00005 0.02252" rpy="0 0 0" />
                 <geometry>
-                    <mesh filename="package://robotiq_description/meshes/collision/2f_85/right_finger_tip.stl" />
+                    <box size="0.0312 0.027 0.057" />
                 </geometry>
                 <surface>
                     <friction>
