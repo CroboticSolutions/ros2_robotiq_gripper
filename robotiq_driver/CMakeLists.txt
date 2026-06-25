@@ -16,6 +16,14 @@ find_package(pluginlib REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(rclcpp_lifecycle REQUIRED)
 find_package(serial REQUIRED)
+# ament-exported `serial` (e.g. RoverRobotics-forks/serial-ros2) exposes
+# serial_LIBRARIES / serial_INCLUDE_DIRS but not the imported target some
+# downstream CMake expects.
+if(NOT TARGET serial::serial)
+  add_library(serial::serial INTERFACE IMPORTED)
+  target_include_directories(serial::serial INTERFACE ${serial_INCLUDE_DIRS})
+  target_link_libraries(serial::serial INTERFACE ${serial_LIBRARIES})
+endif()
 
 set(THIS_PACKAGE_INCLUDE_DEPENDS
   ament_cmake
@@ -54,7 +62,12 @@ add_library(
   src/default_serial.cpp
   src/default_serial_factory.cpp
 )
-target_link_libraries(robotiq_driver atomic)
+# Transitive `<serial/serial.h>` via public headers; do not propagate `serial::serial` link (PRIVATE below).
+target_include_directories(
+  robotiq_driver
+  SYSTEM PUBLIC
+  ${serial_INCLUDE_DIRS}
+)
 target_include_directories(
   robotiq_driver
   PUBLIC
@@ -63,11 +76,14 @@ target_include_directories(
 )
 target_link_libraries(
   robotiq_driver
-  hardware_interface::hardware_interface
-  pluginlib::pluginlib
-  rclcpp::rclcpp
-  rclcpp_lifecycle::rclcpp_lifecycle
-  serial::serial
+  PRIVATE
+    atomic
+    serial::serial
+  PUBLIC
+    hardware_interface::hardware_interface
+    pluginlib::pluginlib
+    rclcpp::rclcpp
+    rclcpp_lifecycle::rclcpp_lifecycle
 )
 
 ###############################################################################
